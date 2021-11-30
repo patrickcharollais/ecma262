@@ -12073,7 +12073,7 @@
         HostEnqueuePromiseJob (
           _job_: a Job Abstract Closure,
           _realm_: a Realm Record or *null*,
-        )
+        ): a Completion Record
       </h1>
       <dl class="header">
         <dt>description</dt>
@@ -12094,7 +12094,7 @@
   </emu-clause>
 
   <emu-clause id="sec-initializehostdefinedrealm" type="abstract operation">
-    <h1>InitializeHostDefinedRealm ( )</h1>
+    <h1>InitializeHostDefinedRealm ( ): ~unused~</h1>
     <dl class="header">
     </dl>
 
@@ -12110,7 +12110,7 @@
       1. Perform SetRealmGlobalObject(_realm_, _global_, _thisValue_).
       1. Let _globalObj_ be ? SetDefaultGlobalBindings(_realm_).
       1. Create any host-defined global object properties on _globalObj_.
-      1. Return NormalCompletion(~empty~).
+      1. Return ~unused~.
     </emu-alg>
   </emu-clause>
 
@@ -12190,7 +12190,7 @@
     </emu-note>
 
     <emu-clause id="sec-agentsignifier" type="abstract operation">
-      <h1>AgentSignifier ( )</h1>
+      <h1>AgentSignifier ( ): unknown</h1>
       <dl class="header">
       </dl>
       <emu-alg>
@@ -12200,7 +12200,7 @@
     </emu-clause>
 
     <emu-clause id="sec-agentcansuspend" type="abstract operation">
-      <h1>AgentCanSuspend ( )</h1>
+      <h1>AgentCanSuspend ( ): a Boolean</h1>
       <dl class="header">
       </dl>
       <emu-alg>
@@ -12358,7 +12358,7 @@
             1. Set _ref_.[[WeakRefTarget]] to ~empty~.
           1. For each FinalizationRegistry _fg_ such that _fg_.[[Cells]] contains a Record _cell_ such that _cell_.[[WeakRefTarget]] is _obj_, do
             1. Set _cell_.[[WeakRefTarget]] to ~empty~.
-            1. Optionally, perform ! HostEnqueueFinalizationRegistryCleanupJob(_fg_).
+            1. Optionally, perform HostEnqueueFinalizationRegistryCleanupJob(_fg_).
           1. For each WeakMap _map_ such that _map_.[[WeakMapData]] contains a Record _r_ such that _r_.[[Key]] is _obj_, do
             1. Set _r_.[[Key]] to ~empty~.
             1. Set _r_.[[Value]] to ~empty~.
@@ -12388,7 +12388,7 @@
         <h1>
           HostEnqueueFinalizationRegistryCleanupJob (
             _finalizationRegistry_: a FinalizationRegistry,
-          )
+          ): ~unused~
         </h1>
         <dl class="header">
         </dl>
@@ -12396,7 +12396,7 @@
         <emu-alg>
           1. Let _cleanupResult_ be CleanupFinalizationRegistry(_finalizationRegistry_).
           1. If _cleanupResult_ is an abrupt completion, perform any host-defined steps for reporting the error.
-          1. Return NormalCompletion(~empty~).
+          1. Return ~unused~.
         </emu-alg>
         <p>An implementation of HostEnqueueFinalizationRegistryCleanupJob schedules _cleanupJob_ to be performed at some future time, if possible. It must also conform to the requirements in <emu-xref href="#sec-jobs"></emu-xref>.</p>
       </emu-clause>
@@ -12404,7 +12404,7 @@
   </emu-clause>
 
   <emu-clause id="sec-clear-kept-objects" type="abstract operation">
-    <h1>ClearKeptObjects ( )</h1>
+    <h1>ClearKeptObjects ( ): ~unused~</h1>
     <dl class="header">
       <dt>description</dt>
       <dd>ECMAScript implementations are expected to call ClearKeptObjects when a synchronous sequence of ECMAScript executions completes.</dd>
@@ -12412,6 +12412,7 @@
     <emu-alg>
       1. Let _agentRecord_ be the surrounding agent's Agent Record.
       1. Set _agentRecord_.[[KeptAlive]] to a new empty List.
+      1. Return ~unused~.
     </emu-alg>
   </emu-clause>
 
@@ -12419,13 +12420,14 @@
     <h1>
       AddToKeptObjects (
         _object_: an Object,
-      )
+      ): ~unused~
     </h1>
     <dl class="header">
     </dl>
     <emu-alg>
       1. Let _agentRecord_ be the surrounding agent's Agent Record.
       1. Append _object_ to _agentRecord_.[[KeptAlive]].
+      1. Return ~unused~.
     </emu-alg>
     <emu-note>
       When the abstract operation AddToKeptObjects is called with a target object reference, it adds the target to a list that will point strongly at the target until ClearKeptObjects is called.
@@ -12436,7 +12438,7 @@
     <h1>
       CleanupFinalizationRegistry (
         _finalizationRegistry_: a FinalizationRegistry,
-      )
+      ): a Completion Record normally containing ~unused~
     </h1>
     <dl class="header">
     </dl>
@@ -12447,7 +12449,7 @@
         1. Choose any such _cell_.
         1. Remove _cell_ from _finalizationRegistry_.[[Cells]].
         1. Perform ? HostCallJobCallback(_callback_, *undefined*, &laquo; _cell_.[[HeldValue]] &raquo;).
-      1. Return NormalCompletion(~empty~).
+      1. Return NormalCompletion(~unused~).
     </emu-alg>
   </emu-clause>
 </emu-clause>
@@ -42403,7 +42405,7 @@ THH:mm:ss.sss
           1. If NewTarget is *undefined*, throw a *TypeError* exception.
           1. If Type(_target_) is not Object, throw a *TypeError* exception.
           1. Let _weakRef_ be ? OrdinaryCreateFromConstructor(NewTarget, *"%WeakRef.prototype%"*, &laquo; [[WeakRefTarget]] &raquo;).
-          1. Perform ! AddToKeptObjects(_target_).
+          1. Perform AddToKeptObjects(_target_).
           1. Set _weakRef_.[[WeakRefTarget]] to _target_.
           1. Return _weakRef_.
         </emu-alg>
@@ -42495,7 +42497,7 @@ THH:mm:ss.sss
         <emu-alg>
           1. Let _target_ be _weakRef_.[[WeakRefTarget]].
           1. If _target_ is not ~empty~, then
-            1. Perform ! AddToKeptObjects(_target_).
+            1. Perform AddToKeptObjects(_target_).
             1. Return _target_.
           1. Return *undefined*.
         </emu-alg>
